@@ -1,0 +1,35 @@
+@extends('layout.template')
+
+@section()
+<div
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Nama</th>
+                <th>NIM</th>
+                <th>Kelas</th>
+            </tr>
+        </thead>
+    </table>
+    <tbody>
+        <tr>
+            <th>1</th>
+            <th>Alifa</th>
+            <th>1112</th>
+            <th>A</th>
+        <tr>
+            <th>2</th>
+            <th>Salwa</th>
+            <th>1113</th>
+            <th>B</th>
+        <tr>
+            <th>3</th>
+            <th>Salsa</th>
+            <th>1114</th>
+            <th>A</th>
+        </tr>
+        </tr>
+        </tr>
+    </tbody>
+@endsection
