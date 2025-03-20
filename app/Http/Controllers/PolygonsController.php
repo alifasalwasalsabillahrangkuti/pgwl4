@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PolygonsModel;
 use Illuminate\Http\Request;
 
 class PolygonsController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->polygons = new PolygonsModel();
+    }
     /**
      * Display a listing of the resource.
      */
@@ -27,7 +33,34 @@ class PolygonsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+                // Validate request
+                $request->validate(
+                    [
+                        'name' => 'required|unique:polygons,name',
+                        'description' => 'required',
+                        'geom_polygon' => 'required',
+                    ],
+                    [
+                        'name.required' => 'Name is required',
+                        'name.unique' => 'Name already exists', // Perbaikan: "Name.unique" menjadi "name.unique"
+                        'description.required' => 'Description is required',
+                        'geom_polygon.required' => 'Geometry polygon is required',
+                    ]
+                );
+
+                $data = [
+                    'geom' => $request->geom_polyline,
+                    'name' => $request->name,
+                    'description' => $request->description,
+                ];
+
+                // Create Data (Perbaikan: Gunakan insert() karena model tidak memiliki fillable)
+                if (!$this->polygons->insert($data)) {
+                    return redirect()->route('map')->with('error', 'Polygon failed to add'); // Perbaikan: 'Success' menjadi 'error'
+                }
+
+                // Redirect to map dengan pesan sukses
+                return redirect()->route('map')->with('success', 'Polygon has been added'); // Perbaikan: 'success'.'Point...' salah
     }
 
     /**

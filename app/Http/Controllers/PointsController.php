@@ -8,9 +8,9 @@ use Illuminate\Http\Request;
 class PointsController extends Controller
 {
     public function __construct()
-        {
-$this->points =  new PointsModel();
-        }
+    {
+        $this->points = new PointsModel();
+    }
 
     /**
      * Display a listing of the resource.
@@ -36,18 +36,34 @@ $this->points =  new PointsModel();
      */
     public function store(Request $request)
     {
+        // Validate request
+        $request->validate(
+            [
+                'name' => 'required|unique:points,name',
+                'description' => 'required',
+                'geom_point' => 'required',
+            ],
+            [
+                'name.required' => 'Name is required',
+                'name.unique' => 'Name already exists', // Perbaikan: "Name.unique" menjadi "name.unique"
+                'description.required' => 'Description is required',
+                'geom_point.required' => 'Geometry point is required',
+            ]
+        );
+
         $data = [
-            'geom'=> $request->geom_point,
-            'name'=> $request->name,
-            'description'=> $request->description,
+            'geom' => $request->geom_point,
+            'name' => $request->name,
+            'description' => $request->description,
         ];
 
+        // Create Data (Perbaikan: Gunakan insert() karena model tidak memiliki fillable)
+        if (!$this->points->insert($data)) {
+            return redirect()->route('map')->with('error', 'Point failed to add'); // Perbaikan: 'Success' menjadi 'error'
+        }
 
-        //Create Data
-        $this->points->create($data);
-
-        //Redirect to map
-        return redirect()->route('map');
+        // Redirect to map dengan pesan sukses
+        return redirect()->route('map')->with('success', 'Point has been added'); // Perbaikan: 'success'.'Point...' salah
     }
 
     /**
